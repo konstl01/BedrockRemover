@@ -1,0 +1,6 @@
+name: BedrockRemover
+version: '${project.version}'
+main: xyz.konstl01.bedrockremover.BedrockRemover
+api-version: 1.19.2
+prefix: BedrockRemover
+authors: [ konstl01 ]
