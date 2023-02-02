@@ -1,6 +1,12 @@
 name: BedrockRemover
 version: '${project.version}'
 main: xyz.konstl01.bedrockremover.BedrockRemover
-api-version: 1.19.2
+api-version: 1.19
 prefix: BedrockRemover
 authors: [ konstl01 ]
+commands:
+  bedrock-removed:
+    description: Lists how much Bedrock got replaced.
+    permission: bedrock.command
+    permission-message: No Permission!
+description: A Plugin that removes Bedrock.

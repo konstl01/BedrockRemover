@@ -1,17 +1,23 @@
 package xyz.konstl01.bedrockremover;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class BedrockRemover extends JavaPlugin {
     private final World world;
     private BukkitRunnable task;
-    private boolean running = true;
-    private int count = 0;
+    private boolean running;
+    public static int count;
+
+
+    public static String getPrefix() {
+        return "[BedrockRemover] ";
+    }
 
     public BedrockRemover() {
         world = getServer().getWorld("ClymCityWorldNewNewNew");
@@ -19,15 +25,21 @@ public class BedrockRemover extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        saveDefaultConfig();
+        BedrockRemover.count = getConfig().getInt("amount");
+        getCommand("bedrock-removed").setExecutor(new BedrockRemoved());
         task = new BukkitRunnable() {
             @Override
             public void run() {
+                if (world.getLoadedChunks() == null) {
+                    running = false;
+                }
                 if (getServer().getTPS()[0] < 17 && running) {
-                    getServer().getConsoleSender().sendMessage("Server TPS is low, pausing BedrockRemover task");
+                    Bukkit.getLogger().fine(getPrefix()+"Server TPS is low, pausing BedrockRemover task");
                     running = false;
                     cancel();
                 } else if (getServer().getTPS()[0] >= 17 && !running) {
-                    getServer().getConsoleSender().sendMessage("Server TPS has recovered, resuming BedrockRemover task");
+                    Bukkit.getLogger().fine(getPrefix()+"Server TPS has recovered, resuming BedrockRemover task");
                     running = true;
                     runTaskTimer(BedrockRemover.this, 0, 20);
                 }
@@ -36,21 +48,12 @@ public class BedrockRemover extends JavaPlugin {
                     return;
                 }
 
-                int minX = (int) (world.getWorldBorder().getCenter().getBlockX() - world.getWorldBorder().getSize() / 2);
-                int maxX = (int) (world.getWorldBorder().getCenter().getBlockX() + world.getWorldBorder().getSize() / 2);
-                int minZ = (int) (world.getWorldBorder().getCenter().getBlockZ() - world.getWorldBorder().getSize() / 2);
-                int maxZ = (int) (world.getWorldBorder().getCenter().getBlockZ() + world.getWorldBorder().getSize() / 2);
-
+                assert world != null;
                 for (Chunk chunk : world.getLoadedChunks()) {
                     for (int x = 0; x < 16; x++) {
                         for (int z = 0; z < 16; z++) {
                             for (int y = 10; y > -2; y--) {
                                 Block block = chunk.getBlock(x, y, z);
-
-                                if (block.getX() < minX || block.getX() > maxX ||
-                                        block.getZ() < minZ || block.getZ() > maxZ) {
-                                    continue;
-                                }
 
                                 if (block.getType() == Material.BEDROCK) {
                                     block.setType(Material.DEEPSLATE);
@@ -60,13 +63,12 @@ public class BedrockRemover extends JavaPlugin {
                         }
                     }
                 }
-
-                if (count >= 10) {
-                    getServer().getConsoleSender().sendMessage("Replaced " + count + " blocks of Bedrock.");
-                    count = 0;
-                }
             }
         };
-        task.runTaskTimer(this, 0, 200);
+        task.runTaskTimer(this, 0, 20);
+    }
+    public void onDisable() {
+        getConfig().set("amount", BedrockRemover.count);
+        saveConfig();
     }
 }
