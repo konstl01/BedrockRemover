@@ -27,7 +27,7 @@ public class BedrockRemover extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
         BedrockRemover.count = getConfig().getInt("amount");
-        getCommand("bedrock-removed").setExecutor(new BedrockRemoved());
+        getCommand("bedrock-removed").setExecutor(new Command());
         task = new BukkitRunnable() {
             @Override
             public void run() {
