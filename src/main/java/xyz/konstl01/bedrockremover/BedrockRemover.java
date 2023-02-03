@@ -73,6 +73,7 @@ public class BedrockRemover extends JavaPlugin {
     public class Reload implements CommandExecutor {
         @Override
         public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
+            onDisable();
             onEnable();
             sender.sendMessage(BedrockRemover.getPrefix()+"Reloaded");
             return true;
