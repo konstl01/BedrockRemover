@@ -9,4 +9,8 @@ commands:
     description: Lists how much Bedrock got replaced.
     permission: bedrock.command
     permission-message: No Permission!
+  brreload:
+    description: Reloads the config.
+    permission: bedrock.command
+    permission-message: No Permission!
 description: A Plugin that removes Bedrock.

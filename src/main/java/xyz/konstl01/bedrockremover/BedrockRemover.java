@@ -5,15 +5,16 @@ import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class BedrockRemover extends JavaPlugin {
-    private final World world;
+    private static World world;
+    public static int count;
     private BukkitRunnable task;
     private boolean running;
-    public static int count;
-
 
     public static String getPrefix() {
         return "[BedrockRemover] ";
@@ -28,6 +29,7 @@ public class BedrockRemover extends JavaPlugin {
         saveDefaultConfig();
         BedrockRemover.count = getConfig().getInt("amount");
         getCommand("bedrock-removed").setExecutor(new Command());
+        getCommand("brreload").setExecutor(new Reload());
         task = new BukkitRunnable() {
             @Override
             public void run() {
@@ -67,6 +69,16 @@ public class BedrockRemover extends JavaPlugin {
         };
         task.runTaskTimer(this, 0, 20);
     }
+
+    public class Reload implements CommandExecutor {
+        @Override
+        public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
+            onEnable();
+            sender.sendMessage(BedrockRemover.getPrefix()+"Reloaded");
+            return true;
+        }
+    }
+
     public void onDisable() {
         getConfig().set("amount", BedrockRemover.count);
         saveConfig();
