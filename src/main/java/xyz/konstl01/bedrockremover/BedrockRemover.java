@@ -26,15 +26,21 @@ public class BedrockRemover extends JavaPlugin {
         getCommand("bedrock-removed").setExecutor(new BedrockRemoved());
         getCommand("brreload").setExecutor(new ReloadCMD());
         getWorld();
-        task = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new Remover(), 20L, 20L);
-        LagChecker();
+        if (world != null) {
+            task = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new Remover(), 20L, 20L);
+            LagChecker();
+            Bukkit.getConsoleSender().sendMessage(getPrefix() + "Plugin started");
+        }
+        return;
     }
 
     public void getWorld() {
-        world = getServer().getWorld(stringWorld);
+        Bukkit.getConsoleSender().sendMessage("World executed");
         if (stringWorld == null) {
             Bukkit.getConsoleSender().sendMessage(getPrefix()+"World in config cannot be NULL!");
             Bukkit.getPluginManager().disablePlugin(this);
+        } else {
+            world = getServer().getWorld(stringWorld);
         }
     }
 
@@ -55,13 +61,16 @@ public class BedrockRemover extends JavaPlugin {
             onDisable();
             onEnable();
             sender.sendMessage(BedrockRemover.getPrefix() + "Reloaded");
+            sender.sendMessage(stringWorld);
             return true;
         }
     }
 
     public void onDisable() {
         task.cancel();
+        Bukkit.getConsoleSender().sendMessage("stopping");
         getConfig().set("amount", BedrockRemover.count);
+        getConfig().set("world", world);
         saveConfig();
     }
 }
