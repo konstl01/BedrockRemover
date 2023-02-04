@@ -1,2 +1,4 @@
-#This ist the amount of how much Bedrock got replaced:
+#This is the amount of how much Bedrock got replaced:
 amount: 0
+#This is the world in which the Bedrock gets replaced:
+world: "world"
