@@ -21,7 +21,7 @@ public class BedrockRemover extends JavaPlugin {
     }
 
     public BedrockRemover() {
-        world = getServer().getWorld("ClymCityWorldNewNewNew");
+        world = getServer().getWorld("world");
     }
 
     @Override
